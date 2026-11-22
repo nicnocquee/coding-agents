@@ -1,12 +1,14 @@
 # Multi-Agent Software Factory
 
-Portable, harness-neutral instructions that turn **any** project into a coordinated multi-agent software factory. Works with Cursor, Claude Code, Codex, Gemini CLI, Grok-based agents, or anything else that can read a markdown file and follow it.
+Portable, harness-neutral instructions that turn **any** project into a coordinated multi-agent software factory.
+
+Works with IDE agents (Cursor, Claude Code, Codex, Gemini CLI, and similar) and with self-hosted teammate / chat-bot apps that load `SKILL.md` recipes, project instruction files (`AGENTS.md` / `CLAUDE.md`), and can run tools in a workspace or sandbox. If the agent can fetch this `SETUP.md` and write the project tree, it can install the factory.
 
 Built on [mattpocock/skills](https://github.com/mattpocock/skills). This repo does not replace those skills; it installs them and adds an Orchestrator playbook with three entry points.
 
 ## Install into a project (one line)
 
-Open the project you want to instrument. Paste this into your coding agent:
+Open the project you want to instrument (IDE folder, or a checkout on a bot computer/sandbox). Paste this into your agent:
 
 ```text
 Follow the multi-agent software factory setup at https://raw.githubusercontent.com/nicnocquee/coding-agents/HEAD/SETUP.md and install it into this project.
@@ -24,17 +26,17 @@ For a local checkout instead of the raw URL, point at that clone's `SETUP.md` pa
 | **Bug** | "Checkout fails when…" | Triage → trivial fix or hard diagnosis → review → PR |
 | **Feature** | "Add saved searches" | Grill with you → spec/tickets → implementers → review → PR |
 
-Human gates sit at alignment (grilling), ticket approval, hard-bug hypothesis ranking, and final PR review. Everything between those gates can run AFK when the harness supports subagents.
+Human gates sit at alignment (grilling), ticket approval, hard-bug hypothesis ranking, and final PR review. Use the harness's native approval cards when available. Everything between those gates can run AFK when the harness supports subagents.
 
 ## Operating modes
 
-The installer probes capabilities (subagents, parallelism, git worktrees) and picks one mode:
+The installer probes capabilities (subagents, parallelism, isolated workspaces) and picks one mode:
 
-- **Full** — parallel subagents, worktrees, merger, parallel reviewers
+- **Full** — parallel subagents, isolated workspaces (git worktrees or sandbox checkouts), merger, parallel reviewers
 - **Serial subagents** — same roles, one at a time
 - **Single-agent sequential** — each role is a phase; cold review in a fresh session
 
-Same flows and artifacts in every mode; only concurrency changes.
+Same flows and artifacts in every mode; only concurrency and isolation change. If subagents inherit parent chat, briefs force "ignore prior conversation."
 
 ## Repo layout
 
@@ -49,7 +51,7 @@ factory/
   templates/             # Brief, report, handoff
 ```
 
-After install, the **target project** gains `docs/factory/` (copy of the playbook), a marker-delimited block in its instruction file, and the usual Matt Pocock setup under `docs/agents/`.
+After install, the **target project** gains `docs/factory/` (copy of the playbook), a marker-delimited block in its instruction file, and the usual Matt Pocock setup under `docs/agents/`. Skills may land as a plugin, under `.agents/skills/`, and/or in the harness skill store, depending on what the agent could use.
 
 ## Upgrade / uninstall
 
@@ -60,4 +62,4 @@ After install, the **target project** gains `docs/factory/` (copy of the playboo
 
 - Harness-neutral: capability detection, not product-name adapters.
 - Composes Matt's skills (`implement-spec`, `code-review`, `triage`, `diagnosing-bugs`, …) instead of reinventing them.
-- Subagents are leaves; only the Orchestrator spawns. Fresh context every time. Communicate by context pointer.
+- Subagents are leaves; only the Orchestrator spawns. Prefer fresh context; degrade safely when the harness inherits chat. Communicate by context pointer.

@@ -44,7 +44,7 @@ Required skills from [mattpocock/skills](https://github.com/mattpocock/skills). 
 
 ## Install routes (pick one)
 
-Order of preference when the executing agent chooses a route:
+Order of preference when the executing agent chooses a route. Use **exactly one** family; do not combine a managed plugin with skills.sh.
 
 1. **Managed plugin** (if the harness supports it and updates itself):
    - Claude Code: `claude plugin install mattpocock-skills@claude-plugins-official`
@@ -53,12 +53,18 @@ Order of preference when the executing agent chooses a route:
 2. **Gemini CLI** (copies; not auto-updating):
    - `gemini skills install https://github.com/mattpocock/skills.git --path skills/engineering`
    - `gemini skills install https://github.com/mattpocock/skills.git --path skills/productivity`
-3. **skills.sh** (editable copy; manual updates) — preferred portable default:
+3. **skills.sh** (editable copy; manual updates) — preferred portable default for IDE CLIs:
    - `npx skills@latest add mattpocock/skills -a <agent>` (omit `-a` to choose; include `setup-matt-pocock-skills` when asked)
    - Update: `npx skills@latest update`, then re-run `add` for new skills
-4. **Raw fallback** (no installer): copy each skill directory from the repo into the project's skills folder the harness already reads. Use GitHub raw/API or `git clone` of `mattpocock/skills`.
+4. **Project `.agents/skills/`** (chat bots, teammate apps, and harnesses that load repo skills):
+   - Clone or sparse-checkout `mattpocock/skills` into a temp dir, then copy each required skill folder into `<project>/.agents/skills/<name>/` (keep `SKILL.md` and any skill-local files).
+   - Prefer this when `npx` / plugin CLIs are unavailable inside a sandbox or computer, but the agent can write the project tree.
+5. **Harness skill store** (account- or space-level skills UI / import API):
+   - Import each required skill's `SKILL.md` (and attachments if the product supports them) into the harness skill store so bots can invoke them by name.
+   - Still keep a project copy under `.agents/skills/` when the repo is shared with IDE agents, so both surfaces see the same recipes.
+6. **Raw fallback**: fetch each `SKILL.md` via GitHub raw/API into the skills folder the harness already reads.
 
-Done when `ask-matt` and `setup-matt-pocock-skills` are discoverable (or their `SKILL.md` files are readable on disk) **and** every skill in the tables above is present.
+Done when `ask-matt` and `setup-matt-pocock-skills` are discoverable (skill store, plugin, or readable `SKILL.md` on disk) **and** every skill in the tables above is present.
 
 ## Skill invocation fallback (identical wording everywhere)
 

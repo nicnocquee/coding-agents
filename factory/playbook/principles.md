@@ -23,12 +23,13 @@ These rules bind every role and every operating mode. When a procedure conflicts
 ## Small deliberate steps
 
 - Tracer-bullet vertical slices, not horizontal layer dumps.
-- One ticket, one fresh context, one worktree (when the mode allows).
+- One ticket, one fresh context, one isolated workspace (when the mode allows).
 - The rate of feedback is the speed limit.
 
 ## Context hygiene
 
-- Every subagent starts with a **fresh context window**. Do not fork the parent conversation into the child.
+- Every subagent should start with a **fresh context window**. Prefer harness options that do not fork the parent conversation into the child.
+- If the harness **always inherits** parent chat into subagents, treat that as a degraded C1: still use subagents for parallelism, but put **only** the brief in the spawn message, tell the child to ignore prior chat, and prefer Serial when inherited noise causes wrong actions. Record `context: inherited` in `docs/factory/capabilities.md`.
 - Communicate by **context pointer** (path, issue URL, commit SHA), not by pasting large copies of specs or diffs into prompts.
 - Keep grilling → spec → tickets in **one unbroken context** when possible. Clear or compact only at a phase boundary.
 - At a phase boundary, apply the decision tree in [coordination.md](coordination.md): continue, clear, handoff, subagent, or compact. Do not compact mid-phase.

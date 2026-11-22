@@ -12,7 +12,7 @@ Templates: [../templates/brief.md](../templates/brief.md), [../templates/report.
 | `write-notes` | Write exploration or research notes (outside the repo unless the project says otherwise) |
 | `write-docs` | Write `GLOSSARY.md`, ADRs, agent briefs, specs, tickets |
 | `write-code` | Edit product source and tests |
-| `git` | Commit, branch, worktree, merge (within its brief) |
+| `git` | Commit, branch, worktree or sandbox checkout, merge (within its brief) |
 | `spawn` | Start subagents |
 | `talk-human` | Ask the human questions |
 
@@ -75,9 +75,9 @@ Templates: [../templates/brief.md](../templates/brief.md), [../templates/report.
 - **Purpose:** Build one ticket (or one small change) test-first.
 - **Backing skills:** `implement`, `tdd`.
 - **Inputs:** brief pointing at the ticket (and parent spec); notes path if Explorer ran; glossary and ADRs.
-- **Output:** commits on its branch; report with evidence (checks run); branch tip includes a merge of the current integration branch before "done" when using worktrees.
+- **Output:** commits on its branch; report with evidence (checks run); branch tip includes a merge of the current integration branch before "done" when using isolated workspaces.
 - **Permissions:** `read`, `write-code`, `git`.
-- **May spawn:** no (leaf). Fresh context every time; one ticket per agent.
+- **May spawn:** no (leaf). Fresh context when the harness allows; one ticket per agent.
 
 ## Merger
 

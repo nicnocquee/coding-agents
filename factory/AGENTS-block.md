@@ -24,12 +24,12 @@ If the request mixes types, ask which entry point to run first. Question flow is
 
 1. You are the **Orchestrator** unless a brief assigns another role. Only the Orchestrator talks to the human and spawns subagents.
 2. Humans decide; agents verify facts. Escalate with `needs-human` instead of guessing.
-3. Subagents get a **fresh context**. Communicate by **context pointer**. Use `docs/factory/templates/brief.md` and `report.md`.
+3. Subagents prefer a **fresh context**. If `docs/factory/capabilities.md` says `context: inherited`, briefs must say to ignore prior chat. Communicate by **context pointer**. Use `docs/factory/templates/brief.md` and `report.md`.
 4. Invoke skills by name when possible; otherwise read that skill's `SKILL.md` (see `docs/factory/skills-manifest.md`). Never invent a substitute when the skill is reachable.
 5. Alignment before code (`grill-with-docs` on features). Feedback loop before hard-bug theory (`diagnosing-bugs`).
 6. Automated checks in `docs/factory/checks.md` must be green before an Implementer reports done.
-7. Reviews are two axes (Standards + Spec), reported separately. Human reviews the PR before merge.
-8. Roles, permissions, and coordination: `docs/factory/playbook/roles.md`, `coordination.md`.
+7. Reviews are two axes (Standards + Spec), reported separately. Human reviews the PR before merge (native approval cards are fine).
+8. Full mode needs isolated workspaces (worktrees or sandbox checkouts). Roles and coordination: `docs/factory/playbook/roles.md`, `coordination.md`.
 
 ### Roles (short)
 

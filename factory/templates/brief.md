@@ -15,6 +15,10 @@ Fill this when the Orchestrator starts a subagent (or a Single-agent phase). Pre
 
 Full | Serial subagents | Single-agent sequential
 
+## Context rule
+
+If docs/factory/capabilities.md says `context: inherited`, begin work with: ignore prior conversation; follow only this brief and its pointers.
+
 ## Pointers
 
 - Issue / ticket:

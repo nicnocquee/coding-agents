@@ -4,11 +4,12 @@ How agents talk, when to split context, how to fail, and how to avoid double wor
 
 ## Subagent rules
 
-1. **Fresh context every time.** Do not inherit the parent's conversation.
+1. **Fresh context when the harness allows it.** If the harness inherits parent chat, open the spawn with the brief only and an explicit "ignore prior conversation; follow only this brief and the pointers."
 2. **Orchestrator is the only spawner.** Subagents are leaves (depth 1). Nested spawning is out of scope for this playbook; the harness should enforce depth.
 3. **Background when independent; foreground when the next step needs the result now.**
 4. **Sparse prompts.** Prefer context pointers over pasted blobs.
 5. **Concurrency cap** on the Implementer frontier: start at **3–4**. Lower when merge conflicts or cost dominate.
+6. **Isolation:** Full mode needs an isolated workspace per Implementer (git worktree **or** a disposable sandbox/computer checkout of the same repo). Serial may share one workspace.
 
 ## Brief (in) and Report (out)
 
@@ -23,7 +24,8 @@ Must include:
 - **Acceptance criteria** (testable)
 - **Out of scope**
 - **Role permissions** (copy from [roles.md](roles.md))
-- **Mode** (Full / Serial / Single-agent) so the subagent knows whether worktrees exist
+- **Mode** (Full / Serial / Single-agent) so the subagent knows whether isolated workspaces exist
+- **Ignore prior chat** (required when `capabilities.md` says `context: inherited`)
 
 Do **not** include stale file paths or line numbers as requirements. Prefer interfaces and behaviors (see triage agent-brief principles).
 

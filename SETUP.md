@@ -1,6 +1,6 @@
 # SETUP.md — Multi-Agent Software Factory
 
-**You are an agent.** Execute this file to install the factory into the **current project** (the working directory the human opened). Do not invent steps. Do not skip done-conditions.
+**You are an agent.** Execute this file to install the factory into the **current project**: the git working tree you can write (IDE workspace, checkout on a computer/sandbox, or clone the human pointed you at). Do not invent steps. Do not skip done-conditions.
 
 ## Contract
 
@@ -24,12 +24,12 @@ Test **yourself**, not your product name. Record pass/fail for each:
 
 | Id | Probe | Pass if |
 | -- | ----- | ------- |
-| **C1** | Spawn a trivial subagent ("reply with the single word pong") with a fresh context | You get `pong` (or equivalent) back |
+| **C1** | Spawn a trivial subagent ("reply with the single word pong"). Prefer a fresh-context option if the harness has one. | You get `pong` (or equivalent) back. Also record `context: fresh` or `context: inherited` (inherited = child can see parent chat). |
 | **C2** | Start two independent subagents (or one background) without blocking the other | Both complete; or harness clearly supports parallel/background agents |
-| **C3** | Run shell: `git --version` and `git worktree list` (in a git repo) or confirm you can create a worktree | Shell works; worktrees available **or** explicitly unavailable |
-| **C4** | List or invoke installed skills / open a known `SKILL.md` | You can invoke by name **or** read skill files on disk |
-| **C5** | Ask the human one structured multiple-choice question (or note that only plain chat exists) | Structured UI **or** plain chat only |
-| **C6** | Which instruction file does this harness load for the project? | One of: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, other (name it), or unknown |
+| **C3** | Shell + git: `git --version`. Isolation: either `git worktree list` / create a worktree, **or** confirm you can open a disposable sandbox/computer with its own checkout of this repo | Shell + git work; **and** at least one isolation mechanism is available (else fail C3 but note shell/git alone) |
+| **C4** | List or invoke installed skills / open a known `SKILL.md` (plugin, skill store, or `.agents/skills/`) | You can invoke by name **or** read skill files on disk / in the harness skill store |
+| **C5** | Ask the human one structured multiple-choice question or native approval card (or note that only plain chat exists) | Structured UI / approval card **or** plain chat only |
+| **C6** | Which project instruction file does this harness load? | One of: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, other (name it), or unknown. Bot personality files (e.g. `SOUL.md`) are not substitutes for the project factory block. |
 
 If a probe is unsafe or impossible, mark **fail** and note why. Do not fake a pass.
 
@@ -37,9 +37,10 @@ If a probe is unsafe or impossible, mark **fail** and note why. Do not fake a pa
 
 Using [factory/playbook/modes.md](factory/playbook/modes.md) rules:
 
-- **Full** if C1 ∧ C2 ∧ C3 (worktrees)
+- **Full** if C1 ∧ C2 ∧ C3 (isolated workspaces: worktrees or sandbox checkouts)
 - **Serial subagents** if C1 and (not C2 or not C3)
 - **Single-agent sequential** if not C1
+- If C1 is pass but `context: inherited`, keep the mode from the rules above; require ignore-prior-chat on every brief; downgrade Full → Serial if smokes show inherited noise causing mistakes
 
 ### 0.3 Project survey
 
@@ -59,7 +60,7 @@ Show the human:
 1. Capability table (C1–C6) and **chosen mode**
 2. Files you will **create**
 3. Files you will **edit** (especially the instruction file for C6)
-4. Skills install route you intend (one of: managed plugin, Gemini install, skills.sh, raw copy)
+4. Skills install route you intend (plugin, Gemini, skills.sh, project `.agents/skills/`, harness skill store, or raw)
 5. Whether this is a **fresh install** or **upgrade** from `docs/factory/VERSION`
 
 **Stop. Wait for explicit approval.** On rejection, adjust the plan and re-ask. On approval, continue.
@@ -70,14 +71,16 @@ Show the human:
 
 ## Step 1 — Install skills
 
-Follow [factory/skills-manifest.md](factory/skills-manifest.md). Pick **exactly one** route, in this order of preference among those that actually work in this harness:
+Follow [factory/skills-manifest.md](factory/skills-manifest.md). Pick **exactly one** route family, in this order of preference among those that actually work in this harness:
 
 1. Managed plugin (Claude Code / Codex / Copilot) if clearly supported
 2. Gemini CLI dual `skills install` if that CLI is available
 3. `npx skills@latest add mattpocock/skills` (omit `-a` to choose; include `setup-matt-pocock-skills`)
-4. Raw copy of required skill directories into the skills folder this harness reads
+4. Copy required skills into the project's `.agents/skills/` (preferred when CLIs are missing but the project tree is writable, e.g. inside a sandbox/computer)
+5. Import into the harness account/space skill store (and still prefer a project `.agents/skills/` copy when IDEs will share the repo)
+6. Raw fetch of each `SKILL.md` into the skills folder the harness already reads
 
-Never install both a plugin route and skills.sh.
+Never install both a managed plugin route and skills.sh.
 
 **Done-condition:**
 
@@ -132,22 +135,23 @@ Write `docs/factory/capabilities.md`:
 
 - Detected: <ISO date>
 - Mode: Full | Serial subagents | Single-agent sequential
-- C1 (subagent): pass | fail — <note>
+- C1 (subagent): pass | fail — context: fresh | inherited — <note>
 - C2 (parallel/background): pass | fail — <note>
-- C3 (shell/git/worktrees): pass | fail — <note>
+- C3 (shell/git + isolation): pass | fail — isolation: worktree | sandbox-checkout | none — <note>
 - C4 (skills by name): pass | fail — <note>
-- C5 (structured questions): pass | fail — <note>
+- C5 (structured questions / approvals): pass | fail — <note>
 - C6 (instruction file): <filename or unknown>
+- Project root: <absolute path of the git working tree being instrumented>
 - Notes directory (exploration): <absolute path outside repo, e.g. $TMPDIR/factory-notes/<project> >
-- Skills install route used: <plugin | gemini | skills.sh | raw>
+- Skills install route used: <plugin | gemini | skills.sh | project-agents-skills | harness-skill-store | raw>
 ```
 
-Create the notes directory if missing.
+Create the notes directory if missing. If the harness has no durable path outside the repo, put notes under `$TMPDIR` on the computer/sandbox and record that path.
 
 ### 3.3 Insert router block
 
 1. Read [factory/AGENTS-block.md](factory/AGENTS-block.md) (content between markers inclusive).
-2. Target file = C6's instruction file. If C6 is unknown: prefer existing `CLAUDE.md` else existing `AGENTS.md`; if neither exists, **ask** which to create (same rule as setup-matt-pocock-skills).
+2. Target file = C6's instruction file. If C6 is unknown: prefer existing `CLAUDE.md` else existing `AGENTS.md`; if neither exists, **ask** which to create (same rule as setup-matt-pocock-skills). If both exist and one only `@`-includes the other, edit the file that holds the real content.
 3. If markers `<!-- factory:start -->` … `<!-- factory:end -->` already exist → replace the block in place.
 4. Else append the block once at the end of the file (with a blank line before it).
 5. If the harness reads a *different* filename than the one you edited, create that other file as a **thin pointer** only:
@@ -156,7 +160,7 @@ Create the notes directory if missing.
    See AGENTS.md (or CLAUDE.md) for project agent instructions, including the multi-agent software factory block.
    ```
 
-   Do not duplicate the full factory block into two full copies unless the human asks.
+   Do not duplicate the full factory block into two full copies unless the human asks. Do not put the factory block into bot personality files; keep it in the project instruction file.
 
 ### 3.4 Scaffold durable dirs if missing
 
@@ -226,7 +230,8 @@ Run these as **dry probes**. Prefer not to leave product-code edits. If a probe 
 
 ### 5.4 Mode probe
 
-- If mode is Full or Serial: confirm C1 still works with a one-line subagent report.
+- If mode is Full or Serial: confirm C1 still works with a one-line subagent report. If `context: inherited`, confirm the child followed a brief that said to ignore prior chat.
+- If mode is Full: confirm the recorded isolation mechanism (worktree or sandbox checkout) is still available.
 - If Single-agent: confirm you documented the cold-reviewer rule in the smoke report.
 
 **Done-condition:** all applicable smokes pass, or one fix attempt then stop with failures listed.
