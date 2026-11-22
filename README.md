@@ -9,15 +9,12 @@ Built on [mattpocock/skills](https://github.com/mattpocock/skills). This repo do
 Open the project you want to instrument. Paste this into your coding agent:
 
 ```text
-Follow the multi-agent software factory setup at <PATH-OR-URL>/SETUP.md and install it into this project.
+Follow the multi-agent software factory setup at https://raw.githubusercontent.com/nicnocquee/coding-agents/HEAD/SETUP.md and install it into this project.
 ```
 
-Replace `<PATH-OR-URL>` with either:
-
-- A local path to this repo (example: `/Users/you/coding-agents-system`), or
-- The raw/`SETUP.md` URL once this repo is hosted publicly (example: `https://raw.githubusercontent.com/<you>/coding-agents-system/HEAD/SETUP.md`)
-
 The agent will detect its own capabilities, ask for approval, install Matt Pocock's skills, configure the issue tracker, copy the factory playbook into `docs/factory/`, and run smoke tests.
+
+For a local checkout instead of the raw URL, point at that clone's `SETUP.md` path.
 
 ## What you get
 
