@@ -2,19 +2,20 @@
 
 Portable, harness-neutral instructions that turn **any** project into a coordinated multi-agent software factory.
 
-Works with IDE agents (Cursor, Claude Code, Codex, Gemini CLI, and similar) and with self-hosted teammate / chat-bot apps that load `SKILL.md` recipes, project instruction files (`AGENTS.md` / `CLAUDE.md`), and can run tools in a workspace or sandbox. If the agent can fetch this `SETUP.md` and write the project tree, it can install the factory.
+Works with IDE agents (Cursor, Claude Code, Codex, Gemini CLI, and similar) and with self-hosted teammate / chat-bot apps that load `SKILL.md` recipes, project instruction files (`AGENTS.md` / `CLAUDE.md`), and can run tools in a workspace or sandbox.
 
 Built on [mattpocock/skills](https://github.com/mattpocock/skills). This repo does not replace those skills; it installs them and adds an Orchestrator playbook with three entry points.
 
-## Install into a project (one line)
+## Install (one line)
 
-Open the project you want to instrument (IDE folder, or a checkout on a bot computer/sandbox). Paste this into your agent:
+Paste this into your agent (with or without a project open):
 
 ```text
-Follow the multi-agent software factory setup at https://raw.githubusercontent.com/nicnocquee/coding-agents/HEAD/SETUP.md and install it into this project.
+Follow the multi-agent software factory setup at https://raw.githubusercontent.com/nicnocquee/coding-agents/HEAD/SETUP.md and install it (into this project if one is open; otherwise as a harness preflight so the next project binds immediately).
 ```
 
-The agent will detect its own capabilities, ask for approval, install Matt Pocock's skills, configure the issue tracker, copy the factory playbook into `docs/factory/`, and run smoke tests.
+- **Project open:** full install into that git tree (`docs/factory/`, router block, checks, smokes).
+- **No project yet:** **harness preflight** — installs skills into the harness skill store, caches the playbook under the agent's factory home, and stops ready. When you later point at a repo, say: `Bind the multi-agent software factory to this project`.
 
 For a local checkout instead of the raw URL, point at that clone's `SETUP.md` path.
 
@@ -51,7 +52,7 @@ factory/
   templates/             # Brief, report, handoff
 ```
 
-After install, the **target project** gains `docs/factory/` (copy of the playbook), a marker-delimited block in its instruction file, and the usual Matt Pocock setup under `docs/agents/`. Skills may land as a plugin, under `.agents/skills/`, and/or in the harness skill store, depending on what the agent could use.
+After a **project** install, the target gains `docs/factory/`, a marker-delimited block in its instruction file, and Matt Pocock setup under `docs/agents/`. After **harness preflight**, skills and a cached playbook live on the agent; Bind copies them into the project when you open one.
 
 ## Upgrade / uninstall
 

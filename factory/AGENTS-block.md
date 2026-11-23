@@ -1,7 +1,7 @@
 <!-- factory:start -->
 ## Multi-agent software factory
 
-This project uses a multi-agent software factory. Before coding, read:
+This project uses a multi-agent software factory. If `docs/factory/` is missing but the harness already ran preflight, bind first (re-run SETUP.md or say "bind the multi-agent software factory to this project"). Before coding, read:
 
 - `docs/factory/capabilities.md` — operating mode (Full / Serial subagents / Single-agent sequential)
 - `docs/factory/playbook/principles.md` — non-negotiables

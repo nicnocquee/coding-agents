@@ -64,7 +64,9 @@ Order of preference when the executing agent chooses a route. Use **exactly one*
    - Still keep a project copy under `.agents/skills/` when the repo is shared with IDE agents, so both surfaces see the same recipes.
 6. **Raw fallback**: fetch each `SKILL.md` via GitHub raw/API into the skills folder the harness already reads.
 
-Done when `ask-matt` and `setup-matt-pocock-skills` are discoverable (skill store, plugin, or readable `SKILL.md` on disk) **and** every skill in the tables above is present.
+Also install the factory harness skill from this repo's `factory/harness-skill/SKILL.md` as `multi-agent-software-factory` whenever a skill store (or global skills dir) is available. That skill tells the agent how to route work and how to **Bind** after a no-project preflight.
+
+Done when `ask-matt` and `setup-matt-pocock-skills` are discoverable (skill store, plugin, or readable `SKILL.md` on disk) **and** every skill in the tables above is present. For harness preflight, also require `multi-agent-software-factory` to be discoverable.
 
 ## Skill invocation fallback (identical wording everywhere)
 
